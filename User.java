@@ -1,13 +1,7 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.mavenproject1;
-
 
 
 import java.io.Serializable;
-
+import java.time.LocalDate;
 
 public class User implements Serializable
 {
@@ -51,7 +45,7 @@ public class User implements Serializable
         this.email = email;
     }
 
-    public String date_of_birth;
+    private LocalDate date_of_birth;
 
     public String getSurname() {
         return surname;
@@ -61,17 +55,21 @@ public class User implements Serializable
         this.surname = surname;
     }
 
-    public int getAge() {
-        return  age;
+    public String getAge() {
+        return "YOU ARE "+ this.age+" YEARS OLD";
     }
 
     public void setAge(int age) {
         this.age = age;
     }
 
-   
+    public LocalDate getDate_of_birth() {
+        return date_of_birth;
+    }
 
-  
+    public void setDate_of_birth(LocalDate date_of_birth) {
+        this.date_of_birth = date_of_birth;
+    }
 
     public String getName() {
         return name;

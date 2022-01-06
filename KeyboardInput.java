@@ -1,13 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.mavenproject1;
-
-/**
- *
- * @author User
- */
 
 
 import java.time.LocalDate;
@@ -155,7 +145,4 @@ public class KeyboardInput
         return LocalDate.now().minusYears(10).isAfter(userDateOfBirth) && (LocalDate.now().minusYears(100).isBefore(userDateOfBirth));
     }
 
-    
-
 }
-

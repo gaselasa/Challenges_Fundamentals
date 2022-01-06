@@ -1,39 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package com.mycompany.mavenproject1;
-
-/**
- *
- * @author User
- */
-//import java.io.*;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Scanner;
 
 public class Runner {
 
-    private   List<User> myUserData = new ArrayList<>();
+    private  List<User> myUserData = new ArrayList<>();
     private static final Scanner sc = new Scanner(System.in);
-   
+    private  final String FILEPATH="C:/Users/User/Desktop/file.txt";
 
 
-    /*private final*/ KeyboardInput keyboardInput=new KeyboardInput();
-    
+    private final KeyboardInput keyboardInput;
 
     User user;
 
-    static {
+    {
 
-       // keyboardInput = new KeyboardInput();
+        keyboardInput = new KeyboardInput();
 
     }
-   
+
     public  static  void main(String [] o)
     {
 
@@ -92,9 +80,8 @@ public class Runner {
 
 
     public void addNewUser()
-            
     {
-      myUserData=(List<User>)JsonUtil.convertJsonToJava();    
+
 
         user = new User();
 
@@ -104,11 +91,9 @@ public class Runner {
 
         user.setEmail(keyboardInput.readEmail("ENTER YOUR EMAIL :"));
 
-       LocalDate date = keyboardInput.getValidDate("ENTER YOUR DATE OF BIRTH");
-      
-      
+        user.setDate_of_birth(keyboardInput.getValidDate("ENTER YOUR DATE OF BIRTH"));
 
-        user.setAge(Period.between(date, LocalDate.now()).getYears());
+        user.setAge(Period.between(user.getDate_of_birth(), LocalDate.now()).getYears());
 
         if(myUserData.contains(user))
         {
@@ -117,27 +102,80 @@ public class Runner {
         }else
         {
             myUserData.add(user);
-            System.out.println("YOUR AGE IS"+user.getAge()+"\n"+"HELLO "+user.getName()
+            System.out.println(user.getAge()+"\n"+"HELLO "+user.getName()
                     +" "+user.getSurname()+"\n"+"YOUR DETAILS HAS BEEN SAVE TO DATABASE\n"
                     +"================================================================== ");
-             JsonUtil.convertJavaToJson(myUserData);
+            writeObjectToFile(myUserData);
         }
 
 
-      
-       
+
 
     }
 
-    
+    public   void writeObjectToFile(Object student) {
 
-    
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(FILEPATH);
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
+            objectOutputStream.writeObject(student);
+
+
+
+
+            objectOutputStream.close();
+
+
+
+        } catch (IOException e) {
+            System.out.print("OBJECT IS NOT SAVED TO FILE");
+
+
+
+        }
+
+    }
+
+    public void readObjectFromFile(){
+
+        try {
+
+            FileInputStream fileInputStream = new FileInputStream(FILEPATH);
+            ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+
+
+           myUserData=(List<User>)objectInputStream.readObject();
+
+
+
+
+
+
+
+
+
+
+            objectInputStream.close();
+
+
+
+        }catch (FileNotFoundException e){
+            System.out.print("FILE NOT FOUND "+e.getMessage());
+        }catch (IOException e){
+            System.out.print("FILE NOT FOUND "+e.getMessage());
+        }catch (ClassNotFoundException e){
+            System.out.print("CLASS NOT FOUND "+e.getMessage());
+
+
+        }
+
+
+    }
+
     public void deleteUser() {
-    
-      myUserData=(List<User>)JsonUtil.convertJsonToJava();
-      
+       readObjectFromFile();
 
-        if (myUserData.isEmpty()) {
+        if (myUserData.size() == 0) {
             System.out.println("PLEASE ENTER USER FIRST BEFORE YOU CAN DELETE");
             addNewUser();
 
@@ -151,7 +189,7 @@ public class Runner {
             myUserData.remove(currentUser);
             System.out.println("THE USER WITH EMAIL HAS BEEN DELETED\n"
                     + "==================================================\n");
-               JsonUtil.convertJavaToJson(myUserData);
+            writeObjectToFile(myUserData);
 
         } else {
 
@@ -163,41 +201,27 @@ public class Runner {
     }
     public void displayAllUser()
     {
-    
-     myUserData=(ArrayList<User>)JsonUtil.convertJsonToJava();
-       System.out.println(myUserData.size());
-    
-    
+        readObjectFromFile();
 
-        if(myUserData.isEmpty())
+        if(myUserData.size()==0)
         {
             System.out.println("PLEASE ENTER USERS FIRST, BEFORE WE CAN DISPLAY LIST OF USERS");
             addNewUser();
 
         }
 
+        for(User user: myUserData)
+            System.out.println(user);
 
-        for(User userdata: myUserData)
-            System.out.println(userdata);
-          
-            
-        
-            
-        }
-
-    
+    }
 
 
-    
 
 
     public void updateUser()
     {
-
-         myUserData=(List<User>)JsonUtil.convertJsonToJava();
-         
-                 
-        if(myUserData.isEmpty())
+     readObjectFromFile();
+        if(myUserData.size() == 0)
         {
             System.out.println("PLEASE ENTER USER FIRST BEFORE YOU CAN UPDATE");
             addNewUser();
@@ -218,17 +242,15 @@ public class Runner {
             currentUser.setSurname(keyboardInput.readNameAndSurname("WHAT IS YOUR SURNAME:"));
 
             currentUser.setEmail(keyboardInput.readEmail("ENTER YOUR EMAIL :"));
-          LocalDate date = keyboardInput.getValidDate("ENTER YOUR DATE OF BIRTH");
-            
 
-     
-            currentUser.setAge(Period.between(date, LocalDate.now()).getYears());
+            currentUser.setDate_of_birth(keyboardInput.getValidDate("ENTER YOUR DATE OF BIRTH"));
+
+            currentUser.setAge(Period.between(user.getDate_of_birth(), LocalDate.now()).getYears());
 
             myUserData.add(currentUser);
 
             System.out.print("UPDATED INFORMATION\n"+myUserData);
-            
-              JsonUtil.convertJavaToJson(myUserData);
+            writeObjectToFile(myUserData);
 
         }
         else
@@ -236,7 +258,7 @@ public class Runner {
             System.out.println("NO PERSON ASSOCIATED WITH THAT EMAIL "+ email);
 
         }
-      
+
     }
 
     private   User  searchUserByEmail(String email){
